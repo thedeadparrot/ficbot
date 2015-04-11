@@ -1,0 +1,29 @@
+import scrapy
+from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy.contrib.linkextractors import LinkExtractor
+
+from stories.items import StoryItem
+
+def view_adult(value):
+    print value
+    return "{}?view_adult=true".format(value)
+
+
+class ListSpider(CrawlSpider):
+    name = "ao3"
+    allowed_domains = ["archiveofourown.org"]
+
+    #TODO: make this an argument of the spider
+    start_urls = [
+        "http://archiveofourown.org/tags/Blaine%20Anderson*s*Kurt%20Hummel/works?commit=Sort+and+Filter&page=75&utf8=%E2%9C%93&work_search[complete]=1&work_search[language_id]=&work_search[other_tag_names]=&work_search[query]=&work_search[rating_ids][]=13&work_search[sort_column]=word_count"
+    ]
+
+    rules = [
+        Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true'), process_value=view_adult), callback='parse_item')
+    ]
+
+    def parse_item(self, response):
+        item = StoryItem()
+        item['title'] = response.xpath('//h2/text()').extract()
+        item['author'] = response.xpath('//a[@rel="author"]/text()').extract()
+        item['text'] = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
