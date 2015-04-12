@@ -1,4 +1,4 @@
-import scrapy
+import re
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
 
@@ -23,7 +23,10 @@ class ListSpider(CrawlSpider):
     ]
 
     def strip_and_join(self, list_text):
-        return " ".join(list_text)
+        """ Strips out HTML tags and unwanted unicode and joins all the paragraphs into a single string. """
+        text = " ".join(list_text)
+        stripped_text = re.sub("<.*?>", "", text)
+        return stripped_text
 
     def parse_item(self, response):
         item = StoryItem()
