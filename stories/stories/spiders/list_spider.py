@@ -1,4 +1,6 @@
 import re
+from unidecode import unidecode
+
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
 
@@ -30,13 +32,15 @@ class ListSpider(CrawlSpider):
         """ Strips out HTML tags and unwanted unicode and joins all the paragraphs into a single string. """
         text = " ".join(list_text)
         stripped_text = re.sub("<.*?>", "", text)
-        return stripped_text
+        # force unicode into closest possible ASCII
+        decoded_text = unidecode(stripped_text)
+        return decoded_text
 
     def parse_item(self, response):
         """ On the individual story pages, parse the page and save relevant data. """
         item = StoryItem()
-        item['title'] = response.xpath('//h2/text()').extract()
-        item['author'] = response.xpath('//a[@rel="author"]/text()').extract()
+        item['title'] = self.strip_and_join(response.xpath('//h2/text()').extract())
+        item['author'] = self.strip_and_join(response.xpath('//a[@rel="author"]/text()').extract())
         #TODO: add new fields for tags (fandom, pairing, freeform, etc.)
         if response.xpath('//div[@class="chapter"]'):
             # handle multi-chapter story
