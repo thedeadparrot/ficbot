@@ -3,6 +3,7 @@
 import re
 import json
 import os
+from stories import settings
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
@@ -12,11 +13,15 @@ import os
 class StoreTextPipeline(object):
     """ This pipeline is responsible for writing out the text into a text file. """
     def __init__(self):
-        self.json_file = open('stories.json', 'wb')
+        self.json_file = open(settings.JSON_OUTPUT, 'wb')
 
     def process_item(self, item, spider):
+        """
+        Dumps item text into separate files and stores a json mapping
+        between the stories and their titles/authors.
+        """
         # create directory if it doesn't already exist
-        directory = 'corpus'
+        directory = settings.CORPUS_DIRECTORY
         if not os.path.exists(directory):
             os.makedirs(directory)
 

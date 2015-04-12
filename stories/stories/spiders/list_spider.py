@@ -4,6 +4,7 @@ from unidecode import unidecode
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors import LinkExtractor
 
+from stories import settings
 from stories.items import StoryItem
 
 
@@ -19,14 +20,14 @@ class ListSpider(CrawlSpider):
     name = "ao3"
     allowed_domains = ["archiveofourown.org"]
 
-    #TODO: make this an argument of the spider
-    start_urls = [
-        "http://archiveofourown.org/tags/Blaine%20Anderson*s*Kurt%20Hummel/works?commit=Sort+and+Filter&page=75&utf8=%E2%9C%93&work_search[complete]=1&work_search[language_id]=&work_search[other_tag_names]=&work_search[query]=&work_search[rating_ids][]=13&work_search[sort_column]=word_count"
-    ]
+    start_urls = settings.STORY_LIST_URLS
 
     rules = [
         Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true&view_full_work=true'), process_value=view_complete), callback='parse_item')
     ]
+
+    def __itit__(self, *args, **kwargs):
+        super(ListSpider, self).__init__(*args, **kwargs)
 
     def strip_and_join(self, list_text):
         """ Strips out HTML tags and unwanted unicode and joins all the paragraphs into a single string. """
