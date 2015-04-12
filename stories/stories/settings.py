@@ -24,5 +24,5 @@ CORPUS_DIRECTORY = '../corpus'
 JSON_OUTPUT = 'stories.json'
 
 STORY_LIST_URLS = [
-    "http://archiveofourown.org/tags/Blaine%20Anderson*s*Kurt%20Hummel/works?commit=Sort+and+Filter&page=75&utf8=%E2%9C%93&work_search[complete]=1&work_search[language_id]=&work_search[other_tag_names]=&work_search[query]=&work_search[rating_ids][]=13&work_search[sort_column]=word_count"
+    # Fill this in for people.
 ]
