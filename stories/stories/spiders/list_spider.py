@@ -4,9 +4,9 @@ from scrapy.contrib.linkextractors import LinkExtractor
 
 from stories.items import StoryItem
 
-def view_adult(value):
-    print value
-    return "{}?view_adult=true".format(value)
+
+def view_complete(value):
+    return "{}?view_adult=true&view_full_work=true".format(value)
 
 
 class ListSpider(CrawlSpider):
@@ -19,11 +19,16 @@ class ListSpider(CrawlSpider):
     ]
 
     rules = [
-        Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true'), process_value=view_adult), callback='parse_item')
+        Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true&view_full_work=true'), process_value=view_complete), callback='parse_item')
     ]
 
     def parse_item(self, response):
         item = StoryItem()
         item['title'] = response.xpath('//h2/text()').extract()
         item['author'] = response.xpath('//a[@rel="author"]/text()').extract()
-        item['text'] = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
+        if response.xpath('//div[@class="chapter"]'):
+            # handle multi-chapter story
+            item['text'] = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/node()').extract()
+        else:
+            # single-chapter story
+            item['text'] = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
