@@ -15,3 +15,9 @@ NEWSPIDER_MODULE = 'stories.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'stories (+http://www.yourdomain.com)'
+
+CORPUS_DIRECTORY = '../corpus'
+
+ITEM_PIPELINES = {
+    'stories.pipelines.StoreTextPipeline': 300,
+}
