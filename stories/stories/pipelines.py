@@ -8,4 +8,8 @@
 
 class StoriesPipeline(object):
     def process_item(self, item, spider):
+
+        # dump text to a file
+
+        # construct json that points to file name
         return item

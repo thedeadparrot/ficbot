@@ -6,10 +6,14 @@ from stories.items import StoryItem
 
 
 def view_complete(value):
+    """ Append necessary request values onto the url. """
     return "{}?view_adult=true&view_full_work=true".format(value)
 
 
 class ListSpider(CrawlSpider):
+    """
+    For parsing tag list pages on AO3 and scraping the data of individual works.
+    """
     name = "ao3"
     allowed_domains = ["archiveofourown.org"]
 
@@ -29,9 +33,11 @@ class ListSpider(CrawlSpider):
         return stripped_text
 
     def parse_item(self, response):
+        """ On the individual story pages, parse the page and save relevant data. """
         item = StoryItem()
         item['title'] = response.xpath('//h2/text()').extract()
         item['author'] = response.xpath('//a[@rel="author"]/text()').extract()
+        #TODO: add new fields for tags (fandom, pairing, freeform, etc.)
         if response.xpath('//div[@class="chapter"]'):
             # handle multi-chapter story
             text = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/node()').extract()
