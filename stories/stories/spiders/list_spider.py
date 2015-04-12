@@ -22,13 +22,19 @@ class ListSpider(CrawlSpider):
         Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true&view_full_work=true'), process_value=view_complete), callback='parse_item')
     ]
 
+    def strip_and_join(self, list_text):
+        return " ".join(list_text)
+
     def parse_item(self, response):
         item = StoryItem()
         item['title'] = response.xpath('//h2/text()').extract()
         item['author'] = response.xpath('//a[@rel="author"]/text()').extract()
         if response.xpath('//div[@class="chapter"]'):
             # handle multi-chapter story
-            item['text'] = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/node()').extract()
+            text = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/node()').extract()
         else:
             # single-chapter story
-            item['text'] = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
+            text = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
+
+        item['text'] = self.strip_and_join(text)
+        return item
