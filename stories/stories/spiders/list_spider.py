@@ -31,7 +31,7 @@ class ListSpider(CrawlSpider):
 
     def strip_and_join(self, list_text):
         """ Strips out HTML tags and unwanted unicode and joins all the paragraphs into a single string. """
-        text = " ".join(list_text)
+        text = " ".join(list_text).strip()
         stripped_text = re.sub("<.*?>", "", text)
         # force unicode into closest possible ASCII
         decoded_text = unidecode(stripped_text)
