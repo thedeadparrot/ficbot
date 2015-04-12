@@ -4,10 +4,6 @@ import re
 import json
 import os
 from stories import settings
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
 class StoreTextPipeline(object):
@@ -33,6 +29,7 @@ class StoreTextPipeline(object):
 
         # write information into a helpful JSON file
         item_fields = dict(item)
+        # rewrite the text field with the file name
         item_fields['text'] = full_file
         self.json_file.write(json.dumps(item_fields) + '\n')
 

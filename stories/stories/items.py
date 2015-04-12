@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-
-# Define here the models for your scraped items
-#
-# See documentation in:
-# http://doc.scrapy.org/en/latest/topics/items.html
-
+""" Models that represents a stories that has been scraped. """
 import scrapy
 
 
 class StoryItem(scrapy.Item):
-    # define the fields for your item here like:
+    """ Item that represents a story. """
     title = scrapy.Field()
     author = scrapy.Field()
     text = scrapy.Field()
+    language = scrapy.Field()
+    rating = scrapy.Field()
+    warning = scrapy.Field()
+    category = scrapy.Field()
+    fandom = scrapy.Field()
+    relationship = scrapy.Field()
+    character = scrapy.Field()
