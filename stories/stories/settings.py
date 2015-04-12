@@ -24,5 +24,13 @@ CORPUS_DIRECTORY = '../corpus'
 JSON_OUTPUT = 'stories.json'
 
 STORY_LIST_URLS = [
-    # Fill this in for people.
+    # Fill this in with tag page urls, for example:
+    # "http://archiveofourown.org/tags/Teen%20Wolf%20%28TV%29/works",
+    # "http://archiveofourown.org/tags/Stargate%20Atlantis/works"
 ]
+
+# local settings
+try:
+    from local_settings import *
+except ImportError:
+    pass
