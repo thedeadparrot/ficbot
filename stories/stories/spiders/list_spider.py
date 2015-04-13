@@ -1,3 +1,4 @@
+""" Spider that combs a list of stories on AO3. """
 import re
 from unidecode import unidecode
 
@@ -26,9 +27,6 @@ class ListSpider(CrawlSpider):
         Rule(LinkExtractor(allow=(r'works/[0-9]+\?view_adult=true&view_full_work=true'), process_value=view_complete), callback='parse_item')
     ]
 
-    def __itit__(self, *args, **kwargs):
-        super(ListSpider, self).__init__(*args, **kwargs)
-
     def strip_and_join(self, list_text, separator=" "):
         """ Strips out HTML tags and unwanted unicode and joins all the paragraphs into a single string. """
         text = separator.join(list_text).strip()
@@ -38,6 +36,7 @@ class ListSpider(CrawlSpider):
         return decoded_text
 
     def parse_tags(self, response, item, tag_category):
+        """ Parse the category's tags and save them to the item."""
         xpath = '//dd[@class="{} tags"]/ul/li/a/text()'.format(tag_category)
         item[tag_category] = response.xpath(xpath).extract()
 
