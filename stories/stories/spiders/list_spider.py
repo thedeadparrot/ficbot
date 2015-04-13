@@ -54,10 +54,10 @@ class ListSpider(CrawlSpider):
 
         if response.xpath('//div[@class="chapter"]'):
             # handle multi-chapter story
-            text = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/node()').extract()
+            text = response.xpath('//div[@id="chapters"]/div[@class="chapter"]/div[@role="article"]/p/text()').extract()
         else:
             # single-chapter story
-            text = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/node()').extract()
+            text = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/p/text()').extract()
 
         item['text'] = self.strip_and_join(text)
         return item
