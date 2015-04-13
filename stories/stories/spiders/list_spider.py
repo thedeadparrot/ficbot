@@ -59,5 +59,5 @@ class ListSpider(CrawlSpider):
             # single-chapter story
             text = response.xpath('//div[@id="chapters"]/div[@class="userstuff"]/p/text()').extract()
 
-        item['text'] = self.strip_and_join(text)
+        item['text'] = self.strip_and_join(text, "\n\n")
         return item
