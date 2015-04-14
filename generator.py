@@ -42,7 +42,6 @@ def generate_sequence(cfd, word, num=10):
     """
     sequence = []
     for _ in range(num):
-        #print(word)
         sequence.append(word)
         word = get_random_choice(cfd[word])
         if word is None:

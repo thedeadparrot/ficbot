@@ -46,7 +46,7 @@ class ListSpider(CrawlSpider):
         item['title'] = self.strip_and_join(response.xpath('//h2/text()').extract())
         item['author'] = self.strip_and_join(response.xpath('//a[@rel="author"]/text()').extract(), separator=", ")
         # handle tags
-        for category in ["rating", "warning", "category", "fandom", "relationship", "character"]:
+        for category in ["rating", "warning", "category", "fandom", "relationship", "character", "freeform"]:
             self.parse_tags(response, item, category)
 
         item['language'] = self.strip_and_join(response.xpath('//dd[@class="language"]/text()').extract())

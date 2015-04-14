@@ -15,3 +15,4 @@ class StoryItem(scrapy.Item):
     fandom = scrapy.Field()
     relationship = scrapy.Field()
     character = scrapy.Field()
+    freeform = scrapy.Field()
