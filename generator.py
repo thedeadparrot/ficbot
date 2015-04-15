@@ -1,6 +1,7 @@
 """ Generate a sequence of words. """
 
 from __future__ import print_function
+import re
 import nltk
 import random
 
@@ -26,6 +27,13 @@ def get_random_choice(word_dist):
         # if the random number falls into the current bucket, return this word
         if rand <= running_tot:
             return word_dist.most_common(index)[-1][0]
+
+
+def clean_text(text):
+    """ Clean up common oddnesses, like spaces before punctuation and such. """
+    cleaned_text = re.sub(r'\s([?.!,](?:\s|$))', r'\1', text)
+    cleaned_text = re.sub(r" ([']) ", r"\1", cleaned_text)
+    return cleaned_text
 
 
 def generate_sequence(cfd, word, num=10):
@@ -56,4 +64,8 @@ bigrams = nltk.bigrams(reader.words())
 
 reader_cfd = nltk.ConditionalFreqDist(bigrams)
 
-print(" ".join(generate_sequence(reader_cfd, 'Blaine', 400)))
+starter_word = random.choice(reader_cfd.conditions())
+
+output_text = " ".join(generate_sequence(reader_cfd, starter_word, 400))
+
+print(clean_text(output_text))
