@@ -1,3 +1,8 @@
+Ficbot Model Generation
+=======================
+
+[![Travis Build Status](https://travis-ci.org/thedeadparrot/ficbot-model-generation.svg?branch=master)](https://travis-ci.org/thedeadparrot/ficbot-model-generation)
+
 List of things I needed to do to get this working:
 
 
