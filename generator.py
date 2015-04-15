@@ -6,6 +6,20 @@ import nltk
 import random
 
 
+def conditional_bigrams(bigram_list):
+    """ Generates a set of bigrams that look like (tuple, word) for the sake of consistency.
+    """
+    for bigram in bigram_list:
+        yield ((bigram[0],), bigram[1])
+
+
+def conditional_trigrams(trigram_list):
+    """ Generates a set of trigrams that look like (tuple, word) for the sake of consistency.
+    """
+    for trigram in trigram_list:
+        yield ((trigram[0], trigram[1]), trigram[2])
+
+
 def get_random_choice(word_dist):
     """
     Given a word distribution, pick one at random based on how common
@@ -31,29 +45,37 @@ def get_random_choice(word_dist):
 
 def clean_text(text):
     """ Clean up common oddnesses, like spaces before punctuation and such. """
+    # fix ending punctuation
     cleaned_text = re.sub(r'\s([?.!,](?:\s|$))', r'\1', text)
+    # fix apostrophes
     cleaned_text = re.sub(r" ([']) ", r"\1", cleaned_text)
     return cleaned_text
 
 
-def generate_sequence(cfd, word, num=10):
+def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
     """
     Generate a sequence of words based on a ConditionalFreqDist.
 
     Args:
         cfd - A ConditionalFreqDist
-        word - the word that will start the sequence
-        num - the number of words to generate for the sequence
+        previous_tuple (tuple) - the starting condition that will lead the sequence
+        seq_length (int)- the number of words to generate for the sequence
+        condition_length (int) - the length of previous_tuple and the number of elements in the starting condition
 
     Returns:
         a list of words
     """
-    sequence = []
-    for _ in range(num):
-        sequence.append(word)
-        word = get_random_choice(cfd[word])
-        if word is None:
-            word = get_random_choice(random.choice(cfd))
+    # when
+    assert len(previous_tuple) == condition_length, "Tuple passed in is not the right length."
+    sequence = list(previous_tuple)
+
+    for _ in range(seq_length):
+        next_word = get_random_choice(cfd[previous_tuple])
+        sequence.append(next_word)
+        # get the last words in the list to use as the basis of the next search
+        previous_tuple = tuple(sequence[-condition_length:])
+        if next_word is None:
+            return sequence
     return sequence
 
 
@@ -61,11 +83,13 @@ root = 'corpus/'
 
 reader = nltk.corpus.PlaintextCorpusReader(root, '.*.txt')
 bigrams = nltk.bigrams(reader.words())
+trigrams = nltk.trigrams(reader.words())
 
-reader_cfd = nltk.ConditionalFreqDist(bigrams)
+reader_cfd = nltk.ConditionalFreqDist(conditional_trigrams(trigrams))
+#reader_cfd = nltk.ConditionalFreqDist(conditional_bigrams(bigrams))
 
-starter_word = random.choice(reader_cfd.conditions())
+#starter_word = random.choice(reader_cfd.conditions())
 
-output_text = " ".join(generate_sequence(reader_cfd, starter_word, 400))
+output_text = " ".join(generate_sequence(reader_cfd, ('Blaine', 'looks'), 100, condition_length=2))
 
 print(clean_text(output_text))
