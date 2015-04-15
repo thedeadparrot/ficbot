@@ -78,18 +78,18 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
             return sequence
     return sequence
 
+def generate_text():
+    root = 'corpus/'
 
-root = 'corpus/'
+    reader = nltk.corpus.PlaintextCorpusReader(root, '.*.txt')
+    bigrams = nltk.bigrams(reader.words())
+    trigrams = nltk.trigrams(reader.words())
 
-reader = nltk.corpus.PlaintextCorpusReader(root, '.*.txt')
-bigrams = nltk.bigrams(reader.words())
-trigrams = nltk.trigrams(reader.words())
+    reader_cfd = nltk.ConditionalFreqDist(conditional_trigrams(trigrams))
+    #reader_cfd = nltk.ConditionalFreqDist(conditional_bigrams(bigrams))
 
-reader_cfd = nltk.ConditionalFreqDist(conditional_trigrams(trigrams))
-#reader_cfd = nltk.ConditionalFreqDist(conditional_bigrams(bigrams))
+    #starter_word = random.choice(reader_cfd.conditions())
 
-#starter_word = random.choice(reader_cfd.conditions())
+    output_text = " ".join(generate_sequence(reader_cfd, ('Blaine', 'looks'), 100, condition_length=2))
 
-output_text = " ".join(generate_sequence(reader_cfd, ('Blaine', 'looks'), 100, condition_length=2))
-
-print(clean_text(output_text))
+    print(clean_text(output_text))
