@@ -21,16 +21,18 @@ class StoreTextPipeline(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        # strip useless characters from the filename
-        filename = "".join(c for c in item['title'] if re.match(r'\w', c))
-        full_file = "{}/{}.txt".format(directory, filename)
-        with open(full_file, 'wb') as text_file:
-            text_file.write(item['text'])
+        # only process file if there is content to write out
+        if re.match(r'\w', item['text']):
+            # strip useless characters from the filename
+            filename = "".join(c for c in item['title'] if re.match(r'\w', c))
+            full_file = "{}/{}.txt".format(directory, filename)
+            with open(full_file, 'wb') as text_file:
+                text_file.write(item['text'])
 
-        # write information into a helpful JSON file
-        item_fields = dict(item)
-        # rewrite the text field with the file name
-        item_fields['text'] = full_file
-        self.json_file.write(json.dumps(item_fields) + '\n')
+            # write information into a helpful JSON file
+            item_fields = dict(item)
+            # rewrite the text field with the file name
+            item_fields['text'] = full_file
+            self.json_file.write(json.dumps(item_fields) + '\n')
 
         return item
