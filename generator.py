@@ -7,7 +7,7 @@ import random
 import pickle
 
 PICKLE_FILE = 'model.pkl'
-N = 4
+N = 3
 
 def conditional_bigrams(bigram_list):
     """ Generates a set of bigrams that look like (tuple, word) for the sake of consistency.
@@ -88,8 +88,6 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
 def generate_model(file_root='corpus/'):
 
     reader = nltk.corpus.PlaintextCorpusReader(file_root, '.*.txt')
-    #bigrams = nltk.bigrams(reader.words())
-    #reader_cfd = nltk.ConditionalFreqDist(conditional_bigrams(bigrams))
     ngrams = nltk.ngrams(reader.words(), N)
 
     reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, N))
