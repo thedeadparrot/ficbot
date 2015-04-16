@@ -78,11 +78,11 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
 
     for _ in range(seq_length):
         next_word = get_random_choice(cfd[previous_tuple])
+        if next_word is None:
+            return sequence
         sequence.append(next_word)
         # get the last words in the list to use as the basis of the next search
         previous_tuple = tuple(sequence[-condition_length:])
-        if next_word is None:
-            return sequence
     return sequence
 
 def generate_model(file_root='corpus/'):

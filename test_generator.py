@@ -53,3 +53,8 @@ class TestSequenceGeneration(unittest.TestCase):
         elif six.PY3:
             expected = list('ababacd')
         self.assertEqual(generated, expected)
+
+    def test_generate_sequence_terminates(self):
+        generated = generate_sequence(self.cfd, ('c',), 3)
+        expected = list('cd')
+        self.assertEqual(generated, expected)
