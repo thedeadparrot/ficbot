@@ -2,11 +2,13 @@
 
 import unittest
 import nltk
+import random
 
-from generator import conditional_bigrams, conditional_trigrams
+from generator import conditional_ngrams, conditional_bigrams, conditional_trigrams, get_random_choice, generate_sequence
 
 
 class TestConditionalGeneration(unittest.TestCase):
+    """ Test the conditional format generation. """
     TEST_CORPUS = "The brown dog jumped."
 
     def test_conditional_bigrams(self):
@@ -17,3 +19,32 @@ class TestConditionalGeneration(unittest.TestCase):
         trigrams = conditional_trigrams(nltk.trigrams(nltk.word_tokenize(self.TEST_CORPUS)))
         self.assertEquals(list(trigrams), [(('The', 'brown'), 'dog'), (('brown', 'dog'), 'jumped'), (('dog', 'jumped'), '.')])
 
+    def test_conditional_ngram_2(self):
+        bigrams = conditional_bigrams(nltk.bigrams(nltk.word_tokenize(self.TEST_CORPUS)))
+        ngrams = conditional_ngrams(nltk.ngrams(nltk.word_tokenize(self.TEST_CORPUS), 2), 2)
+        self.assertEqual(list(bigrams), list(ngrams))
+
+    def test_conditional_ngram_3(self):
+        trigrams = conditional_trigrams(nltk.trigrams(nltk.word_tokenize(self.TEST_CORPUS)))
+        ngrams = conditional_ngrams(nltk.ngrams(nltk.word_tokenize(self.TEST_CORPUS), 3), 3)
+        self.assertEqual(list(trigrams), list(ngrams))
+
+
+
+class TestSequenceGeneration(unittest.TestCase):
+    """ Test Sequence Generation. """
+    
+    TEST_CORPUS = 'abbabacd'
+    def setUp(self):
+        random.seed(1)
+        # generate dist for TEST_CORPUS
+        self.cfd = nltk.ConditionalFreqDist(conditional_bigrams(nltk.bigrams(self.TEST_CORPUS)))
+
+    def test_get_random_word(self):
+        word = get_random_choice(self.cfd[('a',)])
+        self.assertEquals(word, 'b')
+
+    def test_generate_sequence(self):
+        generated = generate_sequence(self.cfd, ('a',), 6)
+        expected = list('abbbaba')
+        self.assertEquals(generated, expected)

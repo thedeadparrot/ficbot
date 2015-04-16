@@ -4,7 +4,10 @@ from __future__ import print_function
 import re
 import nltk
 import random
+import pickle
 
+PICKLE_FILE = 'model.pkl'
+N = 4
 
 def conditional_bigrams(bigram_list):
     """ Generates a set of bigrams that look like (tuple, word) for the sake of consistency.
@@ -20,6 +23,11 @@ def conditional_trigrams(trigram_list):
         yield ((trigram[0], trigram[1]), trigram[2])
 
 
+def conditional_ngrams(ngram_list, n):
+    for ngram in ngram_list:
+        yield (tuple(ngram[:(n - 1)]), ngram[-1])
+
+
 def get_random_choice(word_dist):
     """
     Given a word distribution, pick one at random based on how common
@@ -33,7 +41,6 @@ def get_random_choice(word_dist):
     total_samples = word_dist.N()
     rand = random.randint(0, total_samples)
     running_tot = 0
-    #print('rand: {}, total samples: {}, number_bins: {}'.format(rand, total_samples, word_dist.B()))
     # iterate over all the possible bins
     for index in range(1, word_dist.B() + 1):
         # add the number of incidences of the current word to the total
@@ -78,18 +85,26 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
             return sequence
     return sequence
 
-def generate_text():
-    root = 'corpus/'
+def generate_model(file_root='corpus/'):
 
-    reader = nltk.corpus.PlaintextCorpusReader(root, '.*.txt')
-    bigrams = nltk.bigrams(reader.words())
-    trigrams = nltk.trigrams(reader.words())
-
-    reader_cfd = nltk.ConditionalFreqDist(conditional_trigrams(trigrams))
+    reader = nltk.corpus.PlaintextCorpusReader(file_root, '.*.txt')
+    #bigrams = nltk.bigrams(reader.words())
     #reader_cfd = nltk.ConditionalFreqDist(conditional_bigrams(bigrams))
+    ngrams = nltk.ngrams(reader.words(), N)
 
-    #starter_word = random.choice(reader_cfd.conditions())
+    reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, N))
+    with open(PICKLE_FILE, 'w') as pickle_file:
+        pickle.dump(reader_cfd, pickle_file)
+        
 
-    output_text = " ".join(generate_sequence(reader_cfd, ('Blaine', 'looks'), 100, condition_length=2))
+def generate_text(starting_seq, character_length=140, regen_model=False):
+
+    if regen_model:
+        generate_model()
+
+    with open(PICKLE_FILE, 'r') as pickle_file:
+        reader_cfd = pickle.load(pickle_file)
+
+    output_text = " ".join(generate_sequence(reader_cfd, starting_seq, 200, condition_length=N-1))
 
     print(clean_text(output_text))
