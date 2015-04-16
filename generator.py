@@ -39,15 +39,15 @@ def get_random_choice(word_dist):
         string - a random word from word_dist
     """
     total_samples = word_dist.N()
-    rand = random.randint(0, total_samples)
-    running_tot = 0
+    random_sample = random.randint(0, total_samples)
+    running_total = 0
     # iterate over all the possible bins
-    for index in range(1, word_dist.B() + 1):
+    for word_bin in word_dist.most_common(word_dist.B()):
         # add the number of incidences of the current word to the total
-        running_tot += word_dist.most_common(index)[-1][1]
+        running_total += word_bin[1]
         # if the random number falls into the current bucket, return this word
-        if rand <= running_tot:
-            return word_dist.most_common(index)[-1][0]
+        if random_sample <= running_total:
+            return word_bin[0]
 
 
 def clean_text(text):
