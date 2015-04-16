@@ -1,7 +1,7 @@
 Ficbot 
 =======
 
-[![Travis Build Status](https://travis-ci.org/thedeadparrot/ficbot-model-generation.svg?branch=master)](https://travis-ci.org/thedeadparrot/ficbot)
+[![Travis Build Status](https://travis-ci.org/thedeadparrot/ficbot.svg?branch=master)](https://travis-ci.org/thedeadparrot/ficbot)
 
 Model Generation
 ----------------
