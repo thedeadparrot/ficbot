@@ -3,6 +3,7 @@
 import unittest
 import nltk
 import random
+import six
 
 from generator import conditional_ngrams, conditional_bigrams, conditional_trigrams, get_random_choice, generate_sequence
 
@@ -13,11 +14,11 @@ class TestConditionalGeneration(unittest.TestCase):
 
     def test_conditional_bigrams(self):
         bigrams = conditional_bigrams(nltk.bigrams(nltk.word_tokenize(self.TEST_CORPUS)))
-        self.assertEquals(list(bigrams), [(('The',), 'brown'), (('brown',), 'dog'), (('dog',), 'jumped'), (('jumped',), '.')])
+        self.assertEqual(list(bigrams), [(('The',), 'brown'), (('brown',), 'dog'), (('dog',), 'jumped'), (('jumped',), '.')])
 
     def test_conditional_trigrams(self):
         trigrams = conditional_trigrams(nltk.trigrams(nltk.word_tokenize(self.TEST_CORPUS)))
-        self.assertEquals(list(trigrams), [(('The', 'brown'), 'dog'), (('brown', 'dog'), 'jumped'), (('dog', 'jumped'), '.')])
+        self.assertEqual(list(trigrams), [(('The', 'brown'), 'dog'), (('brown', 'dog'), 'jumped'), (('dog', 'jumped'), '.')])
 
     def test_conditional_ngram_2(self):
         bigrams = conditional_bigrams(nltk.bigrams(nltk.word_tokenize(self.TEST_CORPUS)))
@@ -42,9 +43,13 @@ class TestSequenceGeneration(unittest.TestCase):
 
     def test_get_random_word(self):
         word = get_random_choice(self.cfd[('a',)])
-        self.assertEquals(word, 'b')
+        self.assertEqual(word, 'b')
 
     def test_generate_sequence(self):
         generated = generate_sequence(self.cfd, ('a',), 6)
-        expected = list('abbbaba')
-        self.assertEquals(generated, expected)
+        # Python 3 changed its seeding method, so the sequence we get is different
+        if six.PY2:
+            expected = list('abbbaba')
+        elif six.PY3:
+            expected = list('ababacd')
+        self.assertEqual(generated, expected)

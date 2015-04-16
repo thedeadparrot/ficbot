@@ -91,7 +91,7 @@ def generate_model(file_root='corpus/'):
     ngrams = nltk.ngrams(reader.words(), N)
 
     reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, N))
-    with open(PICKLE_FILE, 'w') as pickle_file:
+    with open(PICKLE_FILE, 'wb') as pickle_file:
         pickle.dump(reader_cfd, pickle_file)
         
 
@@ -100,7 +100,7 @@ def generate_text(starting_seq, character_length=140, regen_model=False):
     if regen_model:
         generate_model()
 
-    with open(PICKLE_FILE, 'r') as pickle_file:
+    with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
 
     output_text = " ".join(generate_sequence(reader_cfd, starting_seq, 200, condition_length=N-1))
