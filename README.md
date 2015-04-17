@@ -6,6 +6,7 @@ Ficbot
 Model Generation
 ----------------
 1. `make install_dependencies`
+2. Run `python generation_script.py` to generate text
 
 Scraping
 --------
@@ -15,3 +16,4 @@ Scraping
 TODO:
 - fix spacing issues
 - larger corpus
+- get all this heroku-ized - config variables set by environment rather than config file

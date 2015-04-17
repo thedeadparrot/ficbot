@@ -108,7 +108,7 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
         pickle.dump(reader_cfd, pickle_file)
         
 
-def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100, regen_model=False):
+def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100):
     """
     Generate text from the model using the given parameters.
 
@@ -124,12 +124,12 @@ def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100, re
 
     assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
 
-    if regen_model:
-        generate_model(ngram_length=ngram_length)
-
     with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
 
     output_text = " ".join(generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1))
 
     return clean_text(output_text)
+
+def generate_text_by_character_length(starting_seq, ngram_length=N, num_words=100):
+    pass
