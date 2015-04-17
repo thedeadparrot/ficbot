@@ -4,11 +4,12 @@ from __future__ import print_function
 import re
 import nltk
 import random
-import pickle
+import cPickle as pickle
 
 CORPUS_ROOT = 'corpus/'
 PICKLE_FILE = 'model.pkl'
 N = 3
+
 
 def conditional_bigrams(bigram_list):
     """ Generates a set of bigrams that look like (tuple, word) for the sake of consistency.
@@ -106,7 +107,7 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
     reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, ngram_length))
     with open(file_name, 'wb') as pickle_file:
         pickle.dump(reader_cfd, pickle_file)
-        
+
 
 def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100):
     """
@@ -130,6 +131,7 @@ def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100):
     output_text = " ".join(generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1))
 
     return clean_text(output_text)
+
 
 def generate_text_by_character_length(starting_seq, ngram_length=N, num_words=100):
     pass

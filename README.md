@@ -15,5 +15,11 @@ Scraping
 
 TODO:
 - fix spacing issues
-- larger corpus
+- write Twitter-sized text generation
+- independent model generation
+- hook up the bots to the text generation
+- tests
 - get all this heroku-ized - config variables set by environment rather than config file
+- get things scheduled
+- write a simple flask frontend?
+- migrate PyTumblr onto Python 3?
