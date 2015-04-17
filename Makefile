@@ -3,4 +3,4 @@ install_dependencies:
 	python -m nltk.downloader punkt
 
 tests:
-	python -m unittest -v test_generator
+	python -m unittest test_generator
