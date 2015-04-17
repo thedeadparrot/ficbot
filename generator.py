@@ -6,6 +6,7 @@ import nltk
 import random
 import pickle
 
+CORPUS_ROOT = 'corpus/'
 PICKLE_FILE = 'model.pkl'
 N = 3
 
@@ -53,7 +54,7 @@ def get_random_choice(word_dist):
 def clean_text(text):
     """ Clean up common oddnesses, like spaces before punctuation and such. """
     # fix ending punctuation
-    cleaned_text = re.sub(r'\s([?.!,](?:\s|$))', r'\1', text)
+    cleaned_text = re.sub(r'\s([?.!,;](?:\s|$))', r'\1', text)
     # fix apostrophes
     cleaned_text = re.sub(r" ([']) ", r"\1", cleaned_text)
     return cleaned_text
@@ -72,8 +73,8 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
     Returns:
         a list of words
     """
-    # when
-    assert len(previous_tuple) == condition_length, "Tuple passed in is not the right length."
+    # when the previous_tuple that gets passed in is not the correct length, assert an error
+    assert len(previous_tuple) == condition_length, "Starting tuple is not the right length."
     sequence = list(previous_tuple)
 
     for _ in range(seq_length):
@@ -85,24 +86,52 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
         previous_tuple = tuple(sequence[-condition_length:])
     return sequence
 
-def generate_model(file_root='corpus/'):
+def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE):
+    """
+    Generate the model that gets used in the eventual text generation and pickles it out to a file.
+
+    Args:
+        file_root (str) - the path to the directory that we're using for our files
+        ngram_length (int) - the length of the ngrams that we're using
+        file_name (str) - the file name we want to use for the pickle file
+
+    Returns:
+        None
+
+    """
 
     reader = nltk.corpus.PlaintextCorpusReader(file_root, '.*.txt')
-    ngrams = nltk.ngrams(reader.words(), N)
+    ngrams = nltk.ngrams(reader.words(), ngram_length)
 
-    reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, N))
-    with open(PICKLE_FILE, 'wb') as pickle_file:
+    reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, ngram_length))
+    with open(file_name, 'wb') as pickle_file:
         pickle.dump(reader_cfd, pickle_file)
         
 
-def generate_text(starting_seq, character_length=140, regen_model=False):
+def generate_text(starting_seq, ngram_length=N, character_length=None, num_words=100, regen_model=False):
+    """
+    Generate text from the model using the given parameters.
+
+    Args:
+        starting_seq (tuple) - the tuple we would like to use to start the sequence.
+        ngram_length (int) - the length of the ngrams that we would like to use to generate the text
+        character_length (int) - currently unused. will be implemented later to support Twitter integration
+        num_words (int) - the number of words in the text we'd like to generate
+        regen_model (bool) - determines whether or not the model is regenerated before generating the text
+
+    Returns:
+        string containing the text that has been generated
+    """
+
+    assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
 
     if regen_model:
-        generate_model()
+        generate_model(ngram_length=ngram_length)
 
     with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
 
-    output_text = " ".join(generate_sequence(reader_cfd, starting_seq, 200, condition_length=N-1))
+    #TODO: support character length in sequence generation
+    output_text = " ".join(generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1))
 
-    print(clean_text(output_text))
+    return clean_text(output_text)

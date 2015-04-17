@@ -58,3 +58,7 @@ class TestSequenceGeneration(unittest.TestCase):
         generated = generate_sequence(self.cfd, ('c',), 3)
         expected = list('cd')
         self.assertEqual(generated, expected)
+
+    def test_generate_sequence_assertion(self):
+        with self.assertRaises(AssertionError):
+            generated = generate_sequence(self.cfd, ('c',), 4, condition_length=3)
