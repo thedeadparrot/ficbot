@@ -10,7 +10,7 @@ from __future__ import print_function
 import argparse
 import nltk
 
-from generator import generate_text
+from generator import generate_text_by_word_length
 
 parser = argparse.ArgumentParser(description='Generate text using simple ngram models')
 
@@ -29,7 +29,7 @@ starting_text = tuple(nltk.word_tokenize(args.starting_text))
 
 # run the generator with the given options
 try:
-    print(generate_text(starting_text, ngram_length=args.ngram_length, num_words=args.num_words, regen_model=args.regen_model))
+    print(generate_text_by_word_length(starting_text, ngram_length=args.ngram_length, num_words=args.num_words, regen_model=args.regen_model))
 except AssertionError as assertion:
     print("ERROR:")
     print("\t{}".format(assertion.message))

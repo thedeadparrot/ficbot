@@ -108,14 +108,13 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
         pickle.dump(reader_cfd, pickle_file)
         
 
-def generate_text(starting_seq, ngram_length=N, character_length=None, num_words=100, regen_model=False):
+def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100, regen_model=False):
     """
     Generate text from the model using the given parameters.
 
     Args:
         starting_seq (tuple) - the tuple we would like to use to start the sequence.
         ngram_length (int) - the length of the ngrams that we would like to use to generate the text
-        character_length (int) - currently unused. will be implemented later to support Twitter integration
         num_words (int) - the number of words in the text we'd like to generate
         regen_model (bool) - determines whether or not the model is regenerated before generating the text
 
@@ -131,7 +130,6 @@ def generate_text(starting_seq, ngram_length=N, character_length=None, num_words
     with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
 
-    #TODO: support character length in sequence generation
     output_text = " ".join(generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1))
 
     return clean_text(output_text)
