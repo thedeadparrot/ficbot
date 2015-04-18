@@ -15,9 +15,9 @@ Scraping
 
 TODO:
 - fix spacing issues
-- hook up the bots to the text generation
-- tests
 - get all this heroku-ized - config variables set by environment rather than config file
+- tests
 - get things scheduled
+- seed the Tumblr bot with better starting text
 - write a simple flask frontend?
 - migrate PyTumblr onto Python 3?

@@ -109,7 +109,7 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
         pickle.dump(reader_cfd, pickle_file)
 
 
-def generate_text(starting_seq, ngram_length=N, num_words=100, limit_characters=None):
+def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_characters=None):
     """
     Generate text from the model using the given parameters.
 
