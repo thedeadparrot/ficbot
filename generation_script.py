@@ -23,12 +23,15 @@ parser.add_argument(
 parser.add_argument('--ngram-length', '-n', action='store', dest='ngram_length', type=int, default=3, help='The number of elements in the n-grams we will be using. Default: 3')
 parser.add_argument('--words', '-w', action='store', dest='num_words', type=int, default=100, help="The number of words to generate. This parameter is overridden when the character flag is set. Default: 100")
 parser.add_argument('--characters', '-c', action='store', dest='limit_characters', type=int, default=None, help="Truncate the number of characters in the output to the given number. Turned off by default.")
-parser.add_argument('starting_text', action='store', help="The text we will use to start the text generation.")
+parser.add_argument('starting_text', action='store', nargs='?', help="The text we will use to start the text generation.")
 
 args = parser.parse_args()
 
 # tuple-ize the starting text that gets passed in
-starting_text = tuple(nltk.word_tokenize(args.starting_text))
+if args.starting_text:
+    starting_text = tuple(nltk.word_tokenize(args.starting_text))
+else:
+    starting_text = None
 
 if args.regen_model or args.regen_model_only:
     generate_model(ngram_length=args.ngram_length)

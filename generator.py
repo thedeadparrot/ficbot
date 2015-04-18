@@ -124,9 +124,16 @@ def generate_text(starting_seq, ngram_length=N, num_words=100, limit_characters=
         string containing the text that has been generated
     """
 
-    assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
+    # we can only check this if we have been given a starting sequence
+    if starting_seq:
+        assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
+
     with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
+
+    # if we don't have a starting sequence, pick one at random from our list
+    if not starting_seq:
+        starting_seq = random.choice(reader_cfd.keys())
 
     sequence = generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1)
 
