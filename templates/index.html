@@ -11,7 +11,8 @@
 $(document).ready(
         function() {
             $(".lead a").click(
-                function () {
+                function (event) {
+                    event.preventDefault();
                     $.ajax("/generate_text").done( function (data) {
                         $("#text-box").text(data);
                     });
