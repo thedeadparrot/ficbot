@@ -152,7 +152,7 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N):
         json.dump(starts, sent_file)
 
 
-def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_characters=None):
+def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_characters=None, reader_cfd=None):
     """
     Generate text from the model using the given parameters.
 
@@ -171,8 +171,9 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
     if starting_seq:
         assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
 
-    with open(MODEL_FILE, 'rb') as model_file:
-        reader_cfd = pickle.load(model_file)
+    if not reader_cfd:
+        with open(MODEL_FILE, 'rb') as model_file:
+            reader_cfd = pickle.load(model_file)
 
     # if we don't have a starting sequence, pick one at random from our list
     if not starting_seq:
