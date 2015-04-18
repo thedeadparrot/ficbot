@@ -1,0 +1,72 @@
+{% extends "bootstrap/base.html" %}
+{% block styles %}
+{{super()}}
+<link rel='stylesheet' href="{{url_for('static', filename='cover.css')}}">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script type="text/javascript">
+$(document).ready(
+        function() {
+            $(".lead a").click(
+                function () {
+                    $.ajax("/generate_text").done( function (data) {
+                        $("#text-box").text(data);
+                    });
+                    $("#text-box").html('<i class="fa fa-cog fa-spin fa-3x"></i>');
+
+                }
+            )
+        }
+)
+</script>
+{% endblock %}
+
+{% block title %}
+FicBot
+{% endblock %}
+
+{% block content %}
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+    <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">FicBot</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                  <li><a href="#">About</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading">FicBot</h1>
+            <p class="lead">Writing fanfic so you don't have to.</p>
+            <p class="lead">
+              <a href="#" class="btn btn-lg btn-default">Generate Text</a>
+            </p>
+            <p class="lead" id="text-box">
+
+            </p>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+                Image provided by <a href="https://www.flickr.com/photos/imanearthworm/5934442651/">Sean Douglas</a>
+            </div>
+          </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+{{super()}}
+{% endblock %}
