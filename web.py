@@ -13,4 +13,9 @@ def generated_text():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', page="index")
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html', page="about")
