@@ -4,6 +4,7 @@
 <link rel='stylesheet' href="{{url_for('static', filename='cover.css')}}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 {% endblock %}
 
 {% block title %}
@@ -17,7 +18,7 @@ FicBot
 
           <div class="masthead clearfix">
             <div class="inner">
-              <h3 class="masthead-brand">FicBot</h3>
+              <h3 class="masthead-brand"><i class="fa fa-cogs pull-left"></i> FicBot</h3>
               <nav>
                 <ul class="nav masthead-nav">
                     {% if page == 'index'%}
@@ -34,10 +35,11 @@ FicBot
 
           <div class="inner cover">
             {% block cover %}
-            <h1 class="cover-heading">FicBot</h1>
+            <h1 class="cover-heading"><i class="fa fa-cogs"></i> FicBot</h1>
             <p class="lead">Writing fanfic so you don't have to.</p>
             <p class="lead">
-              <a href="#" class="btn btn-lg btn-default">Generate Text</a>
+              <a href="#" class="btn btn-lg btn-default"><i class="fa fa-refresh fa-fw"></i>
+                  Generate Text</a>
             </p>
             <p class="lead" id="text-box">
 
