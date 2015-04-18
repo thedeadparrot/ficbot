@@ -58,18 +58,22 @@ def get_random_choice(word_dist):
 def clean_text(text):
     """ Clean up common oddnesses, like spaces before punctuation and such. """
     # fix quotation marks
-    starting = True
     # ugh, special case the start of a string
-    cleaned_text = re.sub(r'^"\s', '"', text)
-    while re.search(r'\s"\s', cleaned_text):
+    starting = False if re.search('^" ', text) else True
+    cleaned_text = re.sub(r'^" ', '"', text)
+    while re.search(r' " ', cleaned_text):
         # add a space before the quotation mark
         if starting:
-            cleaned_text = re.sub(r' " ', r' "', cleaned_text, count=1)
+            cleaned_text = re.sub(' " ', ' "', cleaned_text, count=1)
         # add a space after the quotation mark
         else:
-            cleaned_text = re.sub(r' " ', r'" ', cleaned_text, count=1)
+            cleaned_text = re.sub(' " ', '" ', cleaned_text, count=1)
         # alternate between starting and not starting
         starting = not starting
+
+    # aaaaaan special case ending
+    if not starting:
+        cleaned_text = re.sub(r' "$', '"', cleaned_text)
 
     # fix apostrophes
     cleaned_text = re.sub(r"\s(['])\s", r"\1", cleaned_text)

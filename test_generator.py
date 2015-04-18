@@ -95,4 +95,4 @@ class TestTextCleaning(unittest.TestCase):
 
     def test_quotation(self):
         self.assertCleanedMatches(' " Hello , " he ', ' "Hello," he ')
-        self.assertCleanedMatches('" Hello , ", '"Hello,"')
+        self.assertCleanedMatches('" Hello , "', '"Hello,"')
