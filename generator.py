@@ -2,12 +2,15 @@
 
 from __future__ import print_function
 import re
-import nltk
 import random
 import cPickle as pickle
+import json
+
+import nltk
 
 CORPUS_ROOT = 'corpus/'
-PICKLE_FILE = 'model.pkl'
+MODEL_FILE = 'model.pkl'
+SENTENCE_FILE = 'sents.json'
 N = 3
 
 
@@ -56,8 +59,9 @@ def clean_text(text):
     """ Clean up common oddnesses, like spaces before punctuation and such. """
     # fix quotation marks
     starting = True
-    cleaned_text = text
-    while re.search('\s"\s', cleaned_text):
+    # ugh, special case the start of a string
+    cleaned_text = re.sub(r'^"\s', '"', text)
+    while re.search(r'\s"\s', cleaned_text):
         # add a space before the quotation mark
         if starting:
             cleaned_text = re.sub(r' " ', r' "', cleaned_text, count=1)
@@ -102,9 +106,23 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
     return sequence
 
 
-def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE):
+def sentence_starts(sentences, start_length):
+    """
+    Returns a list of tuples that contain the first start_length number of words from a list of sentences.
+    """
+    # pull all the sentence starts
+    starts = []
+    for sentence in sentences:
+        if len(sentence) > start_length:
+            starts.append(tuple(sentence[:start_length]))
+    return starts
+
+
+def generate_model(file_root=CORPUS_ROOT, ngram_length=N):
     """
     Generate the model that gets used in the eventual text generation and pickles it out to a file.
+
+    Also save the starts of sentences such that they can be used to seed the text generation.
 
     Args:
         file_root (str) - the path to the directory that we're using for our files
@@ -119,9 +137,15 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
     reader = nltk.corpus.PlaintextCorpusReader(file_root, '.*.txt')
     ngrams = nltk.ngrams(reader.words(), ngram_length)
 
+    starts = sentence_starts(reader.sents(), ngram_length-1)
+
     reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, ngram_length))
-    with open(file_name, 'wb') as pickle_file:
-        pickle.dump(reader_cfd, pickle_file)
+
+    with open(MODEL_FILE, 'wb') as model_file:
+        pickle.dump(reader_cfd, model_file)
+
+    with open(SENTENCE_FILE, 'wb') as sent_file:
+        json.dump(starts, sent_file)
 
 
 def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_characters=None):
@@ -143,12 +167,14 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
     if starting_seq:
         assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
 
-    with open(PICKLE_FILE, 'rb') as pickle_file:
-        reader_cfd = pickle.load(pickle_file)
+    with open(MODEL_FILE, 'rb') as model_file:
+        reader_cfd = pickle.load(model_file)
 
     # if we don't have a starting sequence, pick one at random from our list
     if not starting_seq:
-        starting_seq = random.choice(reader_cfd.keys())
+        with open(SENTENCE_FILE, 'rb') as sent_file:
+            starts = [tuple(start) for start in json.load(sent_file)]
+            starting_seq = random.choice(starts)
 
     sequence = generate_sequence(
         reader_cfd, starting_seq, num_words, condition_length=ngram_length-1

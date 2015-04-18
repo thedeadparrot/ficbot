@@ -16,7 +16,6 @@ Scraping
 TODO:
 - get all this heroku-ized - config variables set by environment rather than config file
 - get things scheduled
-- seed the Tumblr bot with better starting text
 - tests
 - documentation
 - write a simple flask frontend?
