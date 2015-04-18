@@ -54,10 +54,24 @@ def get_random_choice(word_dist):
 
 def clean_text(text):
     """ Clean up common oddnesses, like spaces before punctuation and such. """
-    # fix ending punctuation
-    cleaned_text = re.sub(r'\s([?.!,;](?:\s|$))', r'\1', text)
+    # fix quotation marks
+    starting = True
+    cleaned_text = text
+    while re.search('\s"\s', cleaned_text):
+        # add a space before the quotation mark
+        if starting:
+            cleaned_text = re.sub(r' " ', r' "', cleaned_text, count=1)
+        # add a space after the quotation mark
+        else:
+            cleaned_text = re.sub(r' " ', r'" ', cleaned_text, count=1)
+        # alternate between starting and not starting
+        starting = not starting
+
     # fix apostrophes
-    cleaned_text = re.sub(r" ([']) ", r"\1", cleaned_text)
+    cleaned_text = re.sub(r"\s(['])\s", r"\1", cleaned_text)
+
+    # fix ending punctuation
+    cleaned_text = re.sub(r'\s([\?.!,;])', r'\1', cleaned_text)
     return cleaned_text
 
 
@@ -86,6 +100,7 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
         # get the last words in the list to use as the basis of the next search
         previous_tuple = tuple(sequence[-condition_length:])
     return sequence
+
 
 def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE):
     """
@@ -118,7 +133,7 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
         ngram_length (int) - the length of the ngrams that we would like to use to generate the text
         num_words (int) - the number of words in the text we'd like to generate
         regen_model (bool) - determines whether or not the model is regenerated before generating the text
-        limit_characters (int or None) - if this value has been set, truncate the output so that 
+        limit_characters (int or None) - if this value has been set, truncate the output so that
                                          it is shorter than the given number of characters
     Returns:
         string containing the text that has been generated
@@ -135,13 +150,16 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
     if not starting_seq:
         starting_seq = random.choice(reader_cfd.keys())
 
-    sequence = generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1)
+    sequence = generate_sequence(
+        reader_cfd, starting_seq, num_words, condition_length=ngram_length-1
+    )
 
     if limit_characters:
         final_sequence = []
         character_length = 0
         for word in sequence:
-            # Add the length of the word plus one space. This overestimates the length, but that's fine.
+            # Add the length of the word plus one space.
+            # This overestimates the length, but that's fine.
             character_length = character_length + len(word) + 1
             if character_length > limit_characters:
                 break

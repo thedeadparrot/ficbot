@@ -5,7 +5,8 @@ import nltk
 import random
 import six
 
-from generator import conditional_ngrams, conditional_bigrams, conditional_trigrams, get_random_choice, generate_sequence
+from generator import (conditional_ngrams, conditional_bigrams, conditional_trigrams,
+                       get_random_choice, generate_sequence, clean_text)
 
 
 class TestConditionalGeneration(unittest.TestCase):
@@ -14,11 +15,17 @@ class TestConditionalGeneration(unittest.TestCase):
 
     def test_conditional_bigrams(self):
         bigrams = conditional_bigrams(nltk.bigrams(nltk.word_tokenize(self.TEST_CORPUS)))
-        self.assertEqual(list(bigrams), [(('The',), 'brown'), (('brown',), 'dog'), (('dog',), 'jumped'), (('jumped',), '.')])
+        self.assertEqual(
+            list(bigrams),
+            [(('The',), 'brown'), (('brown',), 'dog'), (('dog',), 'jumped'), (('jumped',), '.')]
+        )
 
     def test_conditional_trigrams(self):
         trigrams = conditional_trigrams(nltk.trigrams(nltk.word_tokenize(self.TEST_CORPUS)))
-        self.assertEqual(list(trigrams), [(('The', 'brown'), 'dog'), (('brown', 'dog'), 'jumped'), (('dog', 'jumped'), '.')])
+        self.assertEqual(
+            list(trigrams),
+            [(('The', 'brown'), 'dog'), (('brown', 'dog'), 'jumped'), (('dog', 'jumped'), '.')]
+        )
 
     def test_conditional_ngram_2(self):
         bigrams = conditional_bigrams(nltk.bigrams(nltk.word_tokenize(self.TEST_CORPUS)))
@@ -31,11 +38,11 @@ class TestConditionalGeneration(unittest.TestCase):
         self.assertEqual(list(trigrams), list(ngrams))
 
 
-
 class TestSequenceGeneration(unittest.TestCase):
     """ Test Sequence Generation. """
-    
+
     TEST_CORPUS = 'abbabacd'
+
     def setUp(self):
         random.seed(1)
         # generate dist for TEST_CORPUS
@@ -61,4 +68,30 @@ class TestSequenceGeneration(unittest.TestCase):
 
     def test_generate_sequence_assertion(self):
         with self.assertRaises(AssertionError):
-            generated = generate_sequence(self.cfd, ('c',), 4, condition_length=3)
+            generate_sequence(self.cfd, ('c',), 4, condition_length=3)
+
+
+class TestTextCleaning(unittest.TestCase):
+    """ Make sure we're cleaning text the way we expect."""
+
+    def assertCleanedMatches(self, text_to_clean, expected):
+        cleaned = clean_text(text_to_clean)
+        self.assertEqual(cleaned, expected)
+
+    def test_single_period(self):
+        self.assertCleanedMatches("happy .", "happy.")
+
+    def test_question_mark(self):
+        self.assertCleanedMatches("happy ?", "happy?")
+
+    def test_comma(self):
+        self.assertCleanedMatches("happy ,", "happy,")
+
+    def test_exclamation_point(self):
+        self.assertCleanedMatches("happy !", "happy!")
+
+    def test_apostrophe(self):
+        self.assertCleanedMatches("he ' s", "he's")
+
+    def test_quotation(self):
+        self.assertCleanedMatches(' " Hello , " he ', ' "Hello," he ')

@@ -14,10 +14,9 @@ Scraping
 2. `pip install -r requirements.txt`
 
 TODO:
-- fix spacing issues
 - get all this heroku-ized - config variables set by environment rather than config file
-- tests
 - get things scheduled
 - seed the Tumblr bot with better starting text
+- tests
+- documentation
 - write a simple flask frontend?
-- migrate PyTumblr onto Python 3?
