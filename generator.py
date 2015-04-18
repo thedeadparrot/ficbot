@@ -109,7 +109,7 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N, file_name=PICKLE_FILE)
         pickle.dump(reader_cfd, pickle_file)
 
 
-def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100):
+def generate_text(starting_seq, ngram_length=N, num_words=100, limit_characters=None):
     """
     Generate text from the model using the given parameters.
 
@@ -118,20 +118,30 @@ def generate_text_by_word_length(starting_seq, ngram_length=N, num_words=100):
         ngram_length (int) - the length of the ngrams that we would like to use to generate the text
         num_words (int) - the number of words in the text we'd like to generate
         regen_model (bool) - determines whether or not the model is regenerated before generating the text
-
+        limit_characters (int or None) - if this value has been set, truncate the output so that 
+                                         it is shorter than the given number of characters
     Returns:
         string containing the text that has been generated
     """
 
     assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
-
     with open(PICKLE_FILE, 'rb') as pickle_file:
         reader_cfd = pickle.load(pickle_file)
 
-    output_text = " ".join(generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1))
+    sequence = generate_sequence(reader_cfd, starting_seq, num_words, condition_length=ngram_length-1)
+
+    if limit_characters:
+        final_sequence = []
+        character_length = 0
+        for word in sequence:
+            # Add the length of the word plus one space. This overestimates the length, but that's fine.
+            character_length = character_length + len(word) + 1
+            if character_length > limit_characters:
+                break
+            final_sequence.append(word)
+
+        output_text = " ".join(final_sequence)
+    else:
+        output_text = " ".join(sequence)
 
     return clean_text(output_text)
-
-
-def generate_text_by_character_length(starting_seq, ngram_length=N, num_words=100):
-    pass
