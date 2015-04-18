@@ -163,6 +163,7 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
         regen_model (bool) - determines whether or not the model is regenerated before generating the text
         limit_characters (int or None) - if this value has been set, truncate the output so that
                                          it is shorter than the given number of characters
+        reader_cfd (ConditionalFreqDist) - The CFD to use in our generation. Mostly used because unpickling is slow.
     Returns:
         string containing the text that has been generated
     """

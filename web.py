@@ -1,3 +1,5 @@
+""" Simple Flask server for displaying generated text. """
+
 import pickle
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
