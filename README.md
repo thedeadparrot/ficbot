@@ -1,8 +1,9 @@
-Ficbot 
+FicBot
 =======
 
 [![Travis Build Status](https://travis-ci.org/thedeadparrot/ficbot.svg?branch=master)](https://travis-ci.org/thedeadparrot/ficbot)
 
+I call it FicBot, but it really is generalizable to any sort of English (and possibly even non-English text). It's mostly a very simple implementation of using ngrams to generate text from a corpus of data and a chance for me to play around with a few different technologies. You can see it in action [on Twitter](https://twitter.com/generatedficbot), [on Tumblr](http://ficbot.tumblr.com/), and [on its own website](http://ficbot.herokuapp.com/).
 
 Installation
 -------------
@@ -49,6 +50,3 @@ To run locally:
 1. Type in `guinicorn web:app` while in the top level directory.
 2. View the website at `http://localhost:8000`
 3. Click the `Generate Text` button to view it in action.
-
-TODO:
-- tests
