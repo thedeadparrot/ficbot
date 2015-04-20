@@ -211,7 +211,7 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
     )
 
     if limit_characters:
-        sequence = enforce_character_limit(sequence, enforce_character_limit)
+        sequence = enforce_character_limit(sequence, limit_characters)
 
     output_text = " ".join(sequence)
 
