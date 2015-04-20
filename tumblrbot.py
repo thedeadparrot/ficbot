@@ -13,7 +13,7 @@ class TumblrBot(util.SocialMediaBot):
         self.client = pytumblr.TumblrRestClient(*self.oauth_config)
 
     def post_update(self):
-        text = self.generate_text(num_words=500)
+        text = self.generate_text(num_words=400)
         self.client.create_text(self.blog_name, state='publish', body=text)
 
 tumblrbot = TumblrBot()
