@@ -40,7 +40,7 @@ class SocialMediaBot(object):
             self.access_token_secret,
         )
 
-    def generate_text(**kwargs):
+    def generate_text(self, **kwargs):
         """ A thin wrapper for the subclasses to use. """
         return generate_text(**kwargs)
 
