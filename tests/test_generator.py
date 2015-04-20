@@ -88,7 +88,9 @@ class TestSentenceStarts(unittest.TestCase):
 
 
 class TestCharacterLimits(unittest.TestCase):
-    """ Test to make sure
+    """ Test to make sure the character limits are what we expect. """
+    pass
+
 
 class TestTextCleaning(unittest.TestCase):
     """ Make sure we're cleaning text the way we expect."""
