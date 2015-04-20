@@ -42,7 +42,7 @@ class SocialMediaBot(object):
 
     def generate_text(**kwargs):
         """ A thin wrapper for the subclasses to use. """
-        return generate_text(kwargs)
+        return generate_text(**kwargs)
 
     def post_update(self):
         """
