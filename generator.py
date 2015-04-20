@@ -146,7 +146,7 @@ def enforce_character_limit(sequence, character_limit):
     return final_sequence
 
 
-def generate_model(file_root=CORPUS_ROOT, ngram_length=N):
+def generate_model(file_root=CORPUS_ROOT, ngram_length=N, model_file=MODEL_FILE, sentence_file=SENTENCE_FILE):
     """
     Generate the model that gets used in the eventual text generation and pickles it out to a file.
 
@@ -169,14 +169,20 @@ def generate_model(file_root=CORPUS_ROOT, ngram_length=N):
 
     reader_cfd = nltk.ConditionalFreqDist(conditional_ngrams(ngrams, ngram_length))
 
-    with open(MODEL_FILE, 'wb') as model_file:
-        pickle.dump(reader_cfd, model_file)
+    with open(model_file, 'wb') as m_file:
+        pickle.dump(reader_cfd, m_file)
 
-    with open(SENTENCE_FILE, 'wb') as sent_file:
+    with open(sentence_file, 'wb') as sent_file:
         json.dump(starts, sent_file)
 
 
-def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_characters=None, reader_cfd=None):
+def generate_text(starting_seq=None,
+                  ngram_length=N,
+                  num_words=100,
+                  limit_characters=None,
+                  reader_cfd=None,
+                  model_file=MODEL_FILE,
+                  sentence_file=SENTENCE_FILE):
     """
     Generate text from the model using the given parameters.
 
@@ -197,12 +203,12 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
         assert len(starting_seq) == ngram_length - 1, "The starting sequence does not match the ngram length."
 
     if not reader_cfd:
-        with open(MODEL_FILE, 'rb') as model_file:
-            reader_cfd = pickle.load(model_file)
+        with open(model_file, 'rb') as m_file:
+            reader_cfd = pickle.load(m_file)
 
     # if we don't have a starting sequence, pick one at random from our list
     if not starting_seq:
-        with open(SENTENCE_FILE, 'rb') as sent_file:
+        with open(sentence_file, 'rb') as sent_file:
             starts = [tuple(start) for start in json.load(sent_file)]
             starting_seq = random.choice(starts)
 

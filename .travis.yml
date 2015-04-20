@@ -1,5 +1,5 @@
 language: python
 python:
   - "2.7"
-install: make install_dependencies
+install: make install_test_dependencies
 script: make run_tests

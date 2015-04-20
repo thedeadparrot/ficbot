@@ -2,12 +2,16 @@
 
 import unittest
 import random
+import os
+import json
 
 import nltk
 import six
+import cPickle as pickle
 
 from generator import (conditional_ngrams, conditional_bigrams, conditional_trigrams,
-                       get_random_choice, generate_sequence, clean_text, sentence_starts, enforce_character_limit)
+                       get_random_choice, generate_sequence, clean_text, sentence_starts, enforce_character_limit,
+                       generate_model)
 
 
 class TestConditionalGeneration(unittest.TestCase):
@@ -48,6 +52,8 @@ class TestSequenceGeneration(unittest.TestCase):
         random.seed(1)
         # generate dist for TEST_CORPUS
         self.cfd = nltk.ConditionalFreqDist(conditional_bigrams(nltk.bigrams(self.TEST_CORPUS)))
+        # generate a dist with a different ngram length
+        self.cfd3 = nltk.ConditionalFreqDist(conditional_ngrams(nltk.ngrams(self.TEST_CORPUS, 3), 3))
 
     def test_get_random_word(self):
         word = get_random_choice(self.cfd[('a',)])
@@ -70,6 +76,11 @@ class TestSequenceGeneration(unittest.TestCase):
     def test_generate_sequence_assertion(self):
         with self.assertRaises(AssertionError):
             generate_sequence(self.cfd, ('c',), 4, condition_length=3)
+
+    def test_get_random_word_trigram(self):
+        word = get_random_choice(self.cfd3[('b', 'b')])
+        self.assertEqual(word, 'a')
+
 
 
 class TestSentenceStarts(unittest.TestCase):
@@ -133,9 +144,33 @@ class TestTextCleaning(unittest.TestCase):
 
 class TestModelGeneration(unittest.TestCase):
     """ Test generating the model files. """
+    TEST_MODEL_FILE = 'tests/test_model.pkl'
+    TEST_SENTENCES_FILE = 'tests/test_sents_file.json'
+    TEST_CORPUS = 'tests/test_corpus/'
+
     def setUp(self):
-        pass
+        generate_model(
+            file_root=self.TEST_CORPUS, model_file=self.TEST_MODEL_FILE, sentence_file=self.TEST_SENTENCES_FILE
+        )
+
+    def test_model_generation_cfd(self):
+        # load the file back in again
+        with open(self.TEST_MODEL_FILE, 'rb') as m_file:
+            cfd = pickle.load(m_file)
+
+        self.assertIn(('Hello', ','), set(cfd.keys()))
+        self.assertIn(('this', 'is'), set(cfd.keys()))
+
+    def test_model_generation_sent(self):
+        with open(self.TEST_SENTENCES_FILE, 'rb') as sent_file:
+            sentence_starts = json.load(sent_file)
+
+        self.assertEqual([['Hello', ',']], sentence_starts)
 
     def tearDown(self):
-        pass
+        os.remove(self.TEST_MODEL_FILE)
+        os.remove(self.TEST_SENTENCES_FILE)
 
+
+class TestGenerateText(unittest.TestCase):
+    pass
