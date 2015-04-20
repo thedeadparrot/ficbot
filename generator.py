@@ -122,6 +122,30 @@ def sentence_starts(sentences, start_length):
     return starts
 
 
+def enforce_character_limit(sequence, character_limit):
+    """
+    Truncate the sequence such that the words inside it fit inside the character limit.
+
+    Args:
+        - sequence (list of str) - The sequence of words that need to be truncated
+        - character_limit (int) - the number of characters that can be in our final text sequence
+
+    Returns:
+        A list of str, where the number of characters in the strings (plus spaces) fit inside character_limit.
+    """
+    final_sequence = []
+    character_length = 0
+    for word in sequence:
+        # Add the length of the word plus one space.
+        # This overestimates the length, but that's fine.
+        character_length = character_length + len(word) + 1
+        if character_length > character_limit:
+            break
+        final_sequence.append(word)
+
+    return final_sequence
+
+
 def generate_model(file_root=CORPUS_ROOT, ngram_length=N):
     """
     Generate the model that gets used in the eventual text generation and pickles it out to a file.
@@ -187,18 +211,8 @@ def generate_text(starting_seq=None, ngram_length=N, num_words=100, limit_charac
     )
 
     if limit_characters:
-        final_sequence = []
-        character_length = 0
-        for word in sequence:
-            # Add the length of the word plus one space.
-            # This overestimates the length, but that's fine.
-            character_length = character_length + len(word) + 1
-            if character_length > limit_characters:
-                break
-            final_sequence.append(word)
+        sequence = enforce_character_limit(sequence, enforce_character_limit)
 
-        output_text = " ".join(final_sequence)
-    else:
-        output_text = " ".join(sequence)
+    output_text = " ".join(sequence)
 
     return clean_text(output_text)

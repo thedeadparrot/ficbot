@@ -20,7 +20,7 @@ git clone https://github.com/thedeadparrot/ficbot.git
 Model Generation
 ----------------
 
-To generate models, ensure that you have a directory at the top level named 'corpus' that contains all the `.txt` files you would like to use to train the model.
+To generate models, ensure that you have a directory at the top level named `corpus/` that contains all the `.txt` files you would like to use to train the model.
 
 1. `make install_dependencies` to install all the dependencies.
 2. Run `python generation_script.py -r` from the top level directory to generate the model and view some sample generated text. 
@@ -50,3 +50,9 @@ To run locally:
 1. Type in `guinicorn web:app` while in the top level directory.
 2. View the website at `http://localhost:8000`
 3. Click the `Generate Text` button to view it in action.
+
+
+Tests
+-----
+
+I need to write more of them, but they are a thing that exists! You can view them in the `tests/` directory. You can run them with `make run_tests`.

@@ -1,12 +1,13 @@
 """ Tests for generating the model. """
 
 import unittest
-import nltk
 import random
+
+import nltk
 import six
 
 from generator import (conditional_ngrams, conditional_bigrams, conditional_trigrams,
-                       get_random_choice, generate_sequence, clean_text)
+                       get_random_choice, generate_sequence, clean_text, sentence_starts)
 
 
 class TestConditionalGeneration(unittest.TestCase):
@@ -70,6 +71,24 @@ class TestSequenceGeneration(unittest.TestCase):
         with self.assertRaises(AssertionError):
             generate_sequence(self.cfd, ('c',), 4, condition_length=3)
 
+
+class TestSentenceStarts(unittest.TestCase):
+    """ Test that we are getting the starting sentences correctly. """
+    SAMPLE_TEXT = "I am a test. This is another much longer test sentence."
+
+    def setUp(self):
+        sentences = nltk.tokenize.sent_tokenize(self.SAMPLE_TEXT)
+        self.tokenized_sent = [nltk.tokenize.word_tokenize(sent) for sent in sentences]
+
+    def test_sentence_starts(self):
+        self.assertEqual(sentence_starts(self.tokenized_sent, 2), [("I", "am"), ("This", "is")])
+
+    def test_sentence_starts_ignore_short_sentences(self):
+        self.assertEqual(sentence_starts(self.tokenized_sent, 5), [("This", "is", "another", "much", "longer")])
+
+
+class TestCharacterLimits(unittest.TestCase):
+    """ Test to make sure
 
 class TestTextCleaning(unittest.TestCase):
     """ Make sure we're cleaning text the way we expect."""

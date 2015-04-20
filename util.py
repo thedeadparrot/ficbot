@@ -1,32 +1,51 @@
-""" Utility functions that both bots use. """
+""" Common Bot interface for these bots and other bots to use. """
 import json
+from generator import generate_text
 
 
-def load_oauth_config(system):
+class NoConfigurationError(Exception):
+    pass
+
+
+class SocialMediaBot(object):
     """
-    Returns the OAuth configuration keys for the given system.
-
-    Args:
-        system (str) - which system is being used (i.e. 'tumblr' or 'twitter')
-
-    Returns:
-        a tuple of the form: (CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    An abstract base class for running a Social Media Fic Bot.
     """
-    with open('config.json', 'r') as config_file:
-        config = json.load(config_file).get(system)
+    NAME = ""  # the name of service to post to.
+
+    def __init__(self, config_file='config.json'):
+        try:
+            with open(config_file, 'r') as read_file:
+                # load the configuration for this particular bot
+                config = json.load(read_file).get(self.NAME)
+                if not config:
+                    raise NoConfigurationError(
+                        "Could not find configuration for {} in configuration file.".format(self.NAME)
+                    )
+                for attr in config:
+                    # load all of the configuration options onto object fields
+                    setattr(self, attr, config.get(attr))
+        except IOError:
+            raise NoConfigurationError("Configuration file {} not found.".format(config_file))
+
+    @property
+    def oauth_config(self):
+        """
+        Returns the OAuth configuration keys for the given bot.
+        """
         return (
-            config.get('consumer_key'), 
-            config.get('consumer_secret'),
-            config.get('access_token'), 
-            config.get('access_token_secret')
+            self.consumer_key,
+            self.consumer_secret,
+            self.access_token,
+            self.access_token_secret,
         )
 
+    def generate_text(**kwargs):
+        """ A thin wrapper for the subclasses to use. """
+        return generate_text(kwargs)
 
-def load_blog_name():
-    """
-    Fetches the name of the Tumblr blog that we will be posting to.
-    """
-    with open('config.json', 'r') as config_file:
-        config = json.load(config_file).get('tumblr')
-        return config.get('blog_name')
-
+    def post_update(self):
+        """
+        Post an update to the social media service.
+        """
+        raise NotImplementedError()

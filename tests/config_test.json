@@ -1,0 +1,9 @@
+{
+    "": {
+        "consumer_key": "REPLACE ME",
+        "consumer_secret": "REPLACE ME",
+        "access_token": "REPLACE ME",
+        "access_token_secret": "REPLACE ME",
+        "other_test_field": "I am a test field."
+    }
+}
