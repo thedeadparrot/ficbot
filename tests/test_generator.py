@@ -7,7 +7,7 @@ import nltk
 import six
 
 from generator import (conditional_ngrams, conditional_bigrams, conditional_trigrams,
-                       get_random_choice, generate_sequence, clean_text, sentence_starts)
+                       get_random_choice, generate_sequence, clean_text, sentence_starts, enforce_character_limit)
 
 
 class TestConditionalGeneration(unittest.TestCase):
@@ -89,7 +89,19 @@ class TestSentenceStarts(unittest.TestCase):
 
 class TestCharacterLimits(unittest.TestCase):
     """ Test to make sure the character limits are what we expect. """
-    pass
+    SAMPLE_SEQUENCE = ["I", "am", "a", "sequence", "."]
+
+    def test_enforce_limits_general(self):
+        enforced = enforce_character_limit(self.SAMPLE_SEQUENCE, 5)
+        self.assertEqual(enforced, ["I", "am"])
+
+    def test_enforce_limits_borderline(self):
+        enforced = enforce_character_limit(self.SAMPLE_SEQUENCE, 4)
+        self.assertEqual(enforced, ["I"])
+
+    def test_enforce_limits_generous(self):
+        enforced = enforce_character_limit(self.SAMPLE_SEQUENCE, 200)
+        self.assertEqual(enforced, self.SAMPLE_SEQUENCE)
 
 
 class TestTextCleaning(unittest.TestCase):
@@ -117,3 +129,13 @@ class TestTextCleaning(unittest.TestCase):
     def test_quotation(self):
         self.assertCleanedMatches(' " Hello , " he ', ' "Hello," he ')
         self.assertCleanedMatches('" Hello , "', '"Hello,"')
+
+
+class TestModelGeneration(unittest.TestCase):
+    """ Test generating the model files. """
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+

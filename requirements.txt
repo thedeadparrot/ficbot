@@ -1,6 +1,5 @@
 # [model generation]
 nltk==3.0.2
-six==1.9.0
 
 # [bot interfaces]
 twython==3.2.0
