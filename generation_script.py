@@ -18,12 +18,17 @@ parser.add_argument(
     '--regen', '-r', action='store_true', dest='regen_model', default=False, help='Force a regeneration of the model'
 )
 parser.add_argument(
-    '--regen-only', '-ro', action='store_true', dest='regen_model_only', default=False, help='Regenerate the model and do not generate any text.'
+    '--regen-only', '-ro', action='store_true', dest='regen_model_only', default=False,
+    help='Regenerate the model and do not generate any text.'
 )
-parser.add_argument('--ngram-length', '-n', action='store', dest='ngram_length', type=int, default=3, help='The number of elements in the n-grams we will be using. Default: 3')
-parser.add_argument('--words', '-w', action='store', dest='num_words', type=int, default=100, help="The number of words to generate. This parameter is overridden when the character flag is set. Default: 100")
-parser.add_argument('--characters', '-c', action='store', dest='limit_characters', type=int, default=None, help="Truncate the number of characters in the output to the given number. Turned off by default.")
-parser.add_argument('starting_text', action='store', nargs='?', help="The text we will use to start the text generation.")
+parser.add_argument('--ngram-length', '-n', action='store', dest='ngram_length', type=int, default=3,
+                    help='The number of elements in the n-grams we will be using. Default: 3')
+parser.add_argument('--words', '-w', action='store', dest='num_words', type=int, default=100,
+                    help="The number of words to generate. This parameter is overridden when the character flag is set. Default: 100")
+parser.add_argument('--characters', '-c', action='store', dest='limit_characters', type=int, default=None,
+                    help="Truncate the number of characters in the output to the given number. Turned off by default.")
+parser.add_argument('starting_text', action='store', nargs='?',
+                    help="The text we will use to start the text generation.")
 
 args = parser.parse_args()
 
@@ -40,9 +45,9 @@ if args.regen_model or args.regen_model_only:
 if not args.regen_model_only:
     try:
         print(generate_text(
-            starting_text, 
-            ngram_length=args.ngram_length, 
-            num_words=args.num_words, 
+            starting_text,
+            ngram_length=args.ngram_length,
+            num_words=args.num_words,
             limit_characters=args.limit_characters
         ))
     except AssertionError as assertion:

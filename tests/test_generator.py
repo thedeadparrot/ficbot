@@ -5,13 +5,14 @@ import random
 import os
 import json
 
+import ddt
 import nltk
 import six
 import cPickle as pickle
 
 from generator import (conditional_ngrams, conditional_bigrams, conditional_trigrams,
                        get_random_choice, generate_sequence, clean_text, sentence_starts, enforce_character_limit,
-                       generate_model)
+                       generate_model, generate_text)
 
 
 class TestConditionalGeneration(unittest.TestCase):
@@ -172,5 +173,37 @@ class TestModelGeneration(unittest.TestCase):
         os.remove(self.TEST_SENTENCES_FILE)
 
 
-class TestGenerateText(unittest.TestCase):
-    pass
+@ddt.ddt
+class TestGenerateText(TestModelGeneration):
+    """ Test to make sure text generation and associated options are working as expected. """
+
+    def setUp(self):
+        super(TestGenerateText, self).setUp()
+        random.seed(1)
+
+    def generate_text_pre_loaded(self, **kwargs):
+        """ We are always going to be using these test files, so we might as well abstract them away. """
+        return generate_text(model_file=self.TEST_MODEL_FILE, sentence_file=self.TEST_SENTENCES_FILE, **kwargs)
+
+    def test_text_generation_simple(self):
+        text = self.generate_text_pre_loaded(num_words=3)
+        self.assertEqual("Hello, and this is", text)
+
+    def test_text_generation_limit_characters(self):
+        limit = 6
+        text = self.generate_text_pre_loaded(num_words=5, limit_characters=limit)
+        self.assertTrue(len(text) < limit)
+
+    def test_text_generation_with_starting_sequence(self):
+        text = self.generate_text_pre_loaded(num_words=3, starting_seq=("is", "a"))
+        self.assertEqual("is a test file.", text)
+
+    @ddt.data((2, "Hello,"), (4, "Hello, and this"))
+    @ddt.unpack
+    def test_ngram_length(self, ngram_length, expected_value):
+        generate_model(
+            file_root=self.TEST_CORPUS, model_file=self.TEST_MODEL_FILE, sentence_file=self.TEST_SENTENCES_FILE,
+            ngram_length=ngram_length
+        )
+        text = self.generate_text_pre_loaded(num_words=1, ngram_length=ngram_length)
+        self.assertEqual(text, expected_value)
