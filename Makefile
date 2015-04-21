@@ -5,3 +5,5 @@ install_test_dependencies: install_dependencies
 	pip install -r test-requirements.txt
 run_tests:
 	python -m unittest discover tests/
+clean:
+	rm model.pkl sents.json
