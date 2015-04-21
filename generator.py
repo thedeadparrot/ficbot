@@ -100,7 +100,7 @@ def generate_sequence(cfd, previous_tuple, seq_length=10, condition_length=1):
     assert len(previous_tuple) == condition_length, "Starting tuple is not the right length."
     sequence = list(previous_tuple)
 
-    for _ in range(seq_length):
+    for _ in range(seq_length - condition_length):
         next_word = get_random_choice(cfd[previous_tuple])
         if next_word is None:
             return sequence

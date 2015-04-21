@@ -125,6 +125,14 @@ body {
     font-size: 52px;
 }
 
+.cover .input-group {
+    width: 60%;
+    margin: auto;
+}
+
+.cover .text-display {
+    font-size: 18px;
+}
 
 /*
  * Footer

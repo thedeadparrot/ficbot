@@ -10,11 +10,16 @@
 <script type="text/javascript">
 $(document).ready(
         function() {
-            $(".lead a").click(
+            $("#generate-text-button").click(
                 function (event) {
                     event.preventDefault();
-                    $.ajax("/generate_text").done( function (data) {
+                    var words = $("input[name='num_words']").val();
+                    $.post("/generate_text", { num_words: words })
+                    .done( function (data) {
                         $("#text-box").text(data);
+                    })
+                    .error( function(data) {
+                        $("#text-box").text("Sorry. There was an error trying to generate your fic. Please try again.");
                     });
                     $("#text-box").html('<i class="fa fa-cog fa-spin fa-3x"></i>');
 
@@ -23,4 +28,20 @@ $(document).ready(
         }
 )
 </script>
+{% endblock %}
+{% block cover %}
+<h1 class="cover-heading"><i class="fa fa-cogs"></i> FicBot</h1>
+<p class="lead">Writing fanfic so you don't have to.</p>
+<p class="lead">
+<div class="input-group">
+    <input type="text" name="num_words" class="form-control" placeholder="Number of words to generate" aria-label="Number of words to generate" />
+    <span class="input-group-btn">
+        <button href="#" id="generate-text-button" class="btn btn-default"><i class="fa fa-refresh fa-fw"></i> Generate Text</button>
+    </span>
+</div>
+
+</p>
+<p class="text-display" id="text-box">
+
+</p>
 {% endblock %}

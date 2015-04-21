@@ -64,9 +64,9 @@ class TestSequenceGeneration(unittest.TestCase):
         generated = generate_sequence(self.cfd, ('a',), 6)
         # Python 3 changed its seeding method, so the sequence we get is different
         if six.PY2:
-            expected = list('abbbaba')
+            expected = list('abbbab')
         elif six.PY3:
-            expected = list('ababacd')
+            expected = list('ababac')
         self.assertEqual(generated, expected)
 
     def test_generate_sequence_terminates(self):
@@ -81,7 +81,6 @@ class TestSequenceGeneration(unittest.TestCase):
     def test_get_random_word_trigram(self):
         word = get_random_choice(self.cfd3[('b', 'b')])
         self.assertEqual(word, 'a')
-
 
 
 class TestSentenceStarts(unittest.TestCase):
@@ -187,7 +186,7 @@ class TestGenerateText(TestModelGeneration):
 
     def test_text_generation_simple(self):
         text = self.generate_text_pre_loaded(num_words=3)
-        self.assertEqual("Hello, and this is", text)
+        self.assertEqual("Hello, and", text)
 
     def test_text_generation_limit_characters(self):
         limit = 6
@@ -196,9 +195,9 @@ class TestGenerateText(TestModelGeneration):
 
     def test_text_generation_with_starting_sequence(self):
         text = self.generate_text_pre_loaded(num_words=3, starting_seq=("is", "a"))
-        self.assertEqual("is a test file.", text)
+        self.assertEqual("is a test", text)
 
-    @ddt.data((2, "Hello,"), (4, "Hello, and this"))
+    @ddt.data((2, "Hello"), (4, "Hello, and"))
     @ddt.unpack
     def test_ngram_length(self, ngram_length, expected_value):
         generate_model(

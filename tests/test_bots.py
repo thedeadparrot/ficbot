@@ -14,7 +14,7 @@ class TestTwitterBot(unittest.TestCase):
         self.assertEqual(self.bot.oauth_config,
                          ("REPLACE ME", "REPLACE ME", "REPLACE ME", "REPLACE ME"))
 
-    @mock.patch('util.SocialMediaBot.generate_text', return_value='hello')
+    @mock.patch('util.generate_text', return_value='hello')
     @mock.patch('twython.Twython.update_status')
     def test_update_status(self, update_status_mock, generate_text_mock):
         self.bot.post_update()
@@ -31,7 +31,7 @@ class TestTumblrBot(unittest.TestCase):
                          ("REPLACE ME", "REPLACE ME", "REPLACE ME", "REPLACE ME"))
         self.assertEqual(self.bot.blog_name, "fake blog name")
 
-    @mock.patch('util.SocialMediaBot.generate_text', return_value='hello')
+    @mock.patch('util.generate_text', return_value='hello')
     @mock.patch('pytumblr.TumblrRestClient.create_text')
     def test_update_status(self, create_text_mock, generate_text_mock):
         self.bot.post_update()

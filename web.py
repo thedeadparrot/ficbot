@@ -1,7 +1,7 @@
 """ Simple Flask server for displaying generated text. """
 
-import pickle
-from flask import Flask, render_template, url_for
+import cPickle as pickle
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from generator import generate_text
 
@@ -13,8 +13,19 @@ with open('model.pkl', 'rb') as model_file:
     reader_cfd = pickle.load(model_file)
 
 
-@app.route('/generate_text')
-def generated_text():
+@app.route('/generate_text', methods=['POST', 'GET'])
+def make_generated_text():
+    DEFAULT_NUM_WORDS = 100
+    if request.method == 'POST':
+        # if no number of words has been passed in, default to 100
+        num_words = request.form['num_words'] if 'num_words' in request.form else DEFAULT_NUM_WORDS
+        try:
+            num_words = int(request.form['num_words'])
+        except ValueError:
+            num_words = DEFAULT_NUM_WORDS
+
+        return generate_text(reader_cfd=reader_cfd, num_words=num_words)
+
     return generate_text(reader_cfd=reader_cfd)
 
 
