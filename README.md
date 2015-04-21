@@ -55,4 +55,7 @@ To run locally:
 Tests
 -----
 
-I need to write more of them, but they are a thing that exists! You can view them in the `tests/` directory. You can run them with `make run_tests`.
+I need to write more of them, but they are a thing that exists! You can view them in the `tests/` directory.
+
+1. Make sure to grab the test dependencies with `make install_test_dependencies`
+2. Run them with `make run_tests`.
