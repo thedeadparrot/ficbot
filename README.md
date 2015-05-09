@@ -23,14 +23,14 @@ Model Generation
 To generate models, ensure that you have a directory at the top level named `corpus/` that contains all the `.txt` files you would like to use to train the model.
 
 1. `make install_dependencies` to install all the dependencies.
-2. Run `python generation_script.py -r` from the top level directory to generate the model and view some sample generated text. 
+2. Run `python generation_script.py -r` from the top level directory to generate the model and view some sample generated text.
 3. You can optionally do things like generate different types of models, feed in the starting text you want to use, generate more text than is the default, etc.
 
 
 Bots
 -----
 
-There are two provided bots, a Twitter bot and a Tumblr bot. They are both extremely simple and will only post generated text to their own timelines. 
+There are two provided bots, a Twitter bot and a Tumblr bot. They are both extremely simple and will only post generated text to their own timelines.
 
 1. Set up apps on [Twitter](https://apps.twitter.com/) and [Tumblr](https://www.tumblr.com/oauth/apps) with OAuth credentials.
 2. Make sure for all accounts that you have all four credentials you need: consumer key, consumer secret, access token, and access token secret. The consumer key and consumer secret belong to the app, but the access token and access token secret belong to the user. There are guides online on how to generate the access token and access token secret for Twitter if you need to.

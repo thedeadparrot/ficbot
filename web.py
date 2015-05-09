@@ -5,6 +5,7 @@ from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from generator import generate_text
 
+MODEL_FILE = 'model.pkl'
 app = Flask(__name__)
 Bootstrap(app)
 
